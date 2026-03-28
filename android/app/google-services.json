@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "864519018143",
+    "project_id": "jms-app-39e59",
+    "storage_bucket": "jms-app-39e59.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864519018143:android:c83c1541c061fdc3b534aa",
+        "android_client_info": {
+          "package_name": "com.jal.rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYy6VqWU6pFbaHiUhfhS77z-8cJyGStpc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

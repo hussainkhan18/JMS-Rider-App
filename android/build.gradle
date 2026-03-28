@@ -1,0 +1,37 @@
+// Top-level build.gradle file (modern Flutter setup)
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // If you need to add classpath dependencies (old style), add them here.
+        // For modern Flutter projects with settings.gradle, this section usually stays empty.
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Define the global build directory
+rootProject.buildDir = '../build'
+
+// Ensure each module uses its own build folder under the root build directory
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// Make sure the app module is evaluated first
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+// Clean task
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
