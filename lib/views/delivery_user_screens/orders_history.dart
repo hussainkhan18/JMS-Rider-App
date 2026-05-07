@@ -227,13 +227,22 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
-                  'Customer Empty Bottles: ${order.bottles}',
+                  'Empty Bottles: ${order.bottles}',
                   style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
               ),
               const SizedBox(height: 8),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text(
+                  'Quantity: ${order.quantity}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
               const SizedBox(height: 8),
               Text(
                 'Total Amount: Rs.${order.totalAmount.toStringAsFixed(2)}',

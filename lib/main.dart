@@ -14,6 +14,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart'
@@ -24,6 +25,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize local notifications for foreground message handling
+  await _initializeNotifications();
 
   // Save FCM token to SharedPreferences
   await _saveFcmToken();
@@ -58,6 +62,35 @@ Future<void> main() async {
   );
 }
 
+// Function to initialize local notifications
+Future<void> _initializeNotifications() async {
+  try {
+    final notificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Android settings
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    // iOS settings
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    // Initialize with both platforms
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+
+    await notificationsPlugin.initialize(initSettings);
+    debugPrint("✅ Local notifications initialized");
+  } catch (e) {
+    debugPrint("⚠️ Error initializing notifications: $e");
+  }
+}
+
 // Function to get and save FCM token
 Future<void> _saveFcmToken() async {
   try {
@@ -80,9 +113,62 @@ Future<void> _saveFcmToken() async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("fcm_token", newToken);
     });
+
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint(
+          "📬 Foreground message received: ${message.notification?.title}");
+
+      if (message.notification != null) {
+        // Show notification in foreground
+        _showForegroundNotification(message);
+      }
+    });
   } catch (e) {
     debugPrint("⚠️ FCM Service not available: $e");
     // App continues without FCM if service unavailable
+  }
+}
+
+// Function to display foreground notifications
+Future<void> _showForegroundNotification(RemoteMessage message) async {
+  try {
+    final notification = message.notification;
+    if (notification != null) {
+      // Using a simple notification ID based on timestamp
+      final notificationId = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+      final notificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      // Android notification details with custom sound
+      const androidDetails = AndroidNotificationDetails(
+        'rider_default_channel',
+        'Rider Notifications',
+        channelDescription: 'Custom notification sound for JMS Rider app',
+        importance: Importance.max,
+        priority: Priority.max,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('rider_water_notification'),
+        enableVibration: true,
+      );
+
+      // iOS notification details
+      const iosDetails = DarwinNotificationDetails();
+
+      const notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      await notificationsPlugin.show(
+        notificationId,
+        notification.title,
+        notification.body,
+        notificationDetails,
+      );
+    }
+  } catch (e) {
+    debugPrint("⚠️ Error showing foreground notification: $e");
   }
 }
 

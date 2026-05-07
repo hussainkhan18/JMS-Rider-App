@@ -150,7 +150,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
     stopLocationUpdateTimer();
 
     // Increased from 10s to 30s to avoid rate limiting (429 errors)
-    locationUpdateTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+    locationUpdateTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -265,7 +265,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(requestData),
           )
-          .timeout(Duration(seconds: 30)); // Add timeout
+          .timeout(const Duration(seconds: 30)); // Add timeout
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -316,17 +316,17 @@ class _OngoingOrdersState extends State<OngoingOrders> {
         future: futureOrders,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Error: ${snapshot.error}'),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: refreshPage,
-                    child: Text('Retry'),
+                    child: const Text('Retry'),
                   ),
                 ],
               ),
@@ -338,14 +338,14 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                 await futureOrders; // ensure refresh waits
               },
               child: ListView(
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 children: [
-                  SizedBox(height: 200),
-                  Center(child: Text('No orders found')),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 200),
+                  const Center(child: Text('No orders found')),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: refreshPage,
-                    child: Text('Refresh'),
+                    child: const Text('Refresh'),
                   ),
                 ],
               ),
@@ -359,13 +359,13 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                 await futureOrders; // ensures loader completes
               },
               child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.all(16),
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
                 itemCount: orders.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 16.0),
                       child: Text(
                         'Ongoing Orders',
                         style: TextStyle(
@@ -388,7 +388,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
       BuildContext context, Order order, double buttonWidth) {
     // Check if the order is already delivered
     if (order.status == 4 || deliveredOrders.contains(order)) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     String deliveredDate = '';
@@ -404,7 +404,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
       child: InkWell(
         onTap: () {},
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -413,27 +413,38 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                 children: [
                   Text(
                     'Order #${order.id}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     'Date $deliveredDate',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text('Address: ${order.address}',
-                    style: TextStyle(fontSize: 16)),
+                    style: const TextStyle(fontSize: 16)),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
+
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
-                child: Text('Customer Empty Bottles: ${order.bottles}',
-                    style: TextStyle(fontSize: 16)),
+                child: Text('Empty Bottler s: ${order.bottles}',
+                    style: const TextStyle(fontSize: 16)),
               ),
-              SizedBox(height: 8),
+
+              //No of bottles (Quantity)
+              const SizedBox(height: 8),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text('Quantity: ${order.quantity}',
+                    style: const TextStyle(fontSize: 16)),
+              ),
+              const SizedBox(height: 8),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Column(
@@ -444,22 +455,22 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                     double itemPrice = order.unitPrices[index];
                     return Text(
                       '$itemName: Rs.${itemPrice.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     );
                   }).toList(),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
                   'Total Amount: Rs.${order.totalAmount.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               if (isUpdating)
-                Center(
+                const Center(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: CircularProgressIndicator(),
@@ -500,7 +511,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                       generateGoogleMapsUrl(order.latitude, order.longitude);
                   launchUrl(Uri.parse(mapsUrl));
                 },
-                child: Text(
+                child: const Text(
                   'Get Google Directions',
                   style: TextStyle(fontSize: 11, color: Colors.black),
                 ),
@@ -543,7 +554,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
             },
       child: Text(
         buttonText,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 11,
           color: Colors.black,
         ),
@@ -595,11 +606,11 @@ class _OngoingOrdersState extends State<OngoingOrders> {
   Color _getStatusBackgroundColor(int status) {
     switch (status) {
       case 2:
-        return Color.fromARGB(255, 255, 243, 229);
+        return const Color.fromARGB(255, 255, 243, 229);
       case 3:
-        return Color.fromARGB(255, 255, 229, 229);
+        return const Color.fromARGB(255, 255, 229, 229);
       case 4:
-        return Color.fromARGB(255, 229, 255, 242);
+        return const Color.fromARGB(255, 229, 255, 242);
       default:
         return Colors.white;
     }
@@ -615,7 +626,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -633,21 +644,21 @@ class _OngoingOrdersState extends State<OngoingOrders> {
         isOverlayTapDismiss: false,
         alertBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
-          side: BorderSide(color: Colors.grey),
+          side: const BorderSide(color: Colors.grey),
         ),
-        titleStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        descStyle: TextStyle(fontSize: 16),
+        titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        descStyle: const TextStyle(fontSize: 16),
       ),
       buttons: [
         DialogButton(
-          child: Text("Cancel",
+          child: const Text("Cancel",
               style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () => Navigator.of(context).pop(),
           color: Colors.grey,
         ),
         DialogButton(
-          child:
-              Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+          child: const Text("Yes",
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () async {
             Navigator.of(context).pop();
             try {
@@ -672,6 +683,8 @@ class _OngoingOrdersState extends State<OngoingOrders> {
     TextEditingController bottlesController = TextEditingController();
     TextEditingController cashReceivedController = TextEditingController();
     TextEditingController balanceController = TextEditingController();
+    TextEditingController totalBillingController = TextEditingController();
+    totalBillingController.text = order.totalAmount.toStringAsFixed(2);
 
     final _formKey = GlobalKey<FormState>();
 
@@ -683,29 +696,64 @@ class _OngoingOrdersState extends State<OngoingOrders> {
         isOverlayTapDismiss: false,
         alertBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
-          side: BorderSide(color: Colors.blueAccent),
+          side: const BorderSide(color: Colors.blueAccent),
         ),
-        titleStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
       content: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.receipt_long, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Total Billing',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'Rs. ${order.totalAmount.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
             TextFormField(
               controller: bottlesController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Received Empty Bottles',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.local_drink),
               ),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextFormField(
               controller: cashReceivedController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Cash Received',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.attach_money),
@@ -730,10 +778,10 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                 balanceController.text = balance.toStringAsFixed(2);
               },
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextFormField(
               controller: balanceController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Balance',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.account_balance_wallet),
@@ -741,21 +789,21 @@ class _OngoingOrdersState extends State<OngoingOrders> {
               keyboardType: TextInputType.number,
               readOnly: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
       buttons: [
         DialogButton(
-          child: Text("Cancel",
+          child: const Text("Cancel",
               style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () => Navigator.of(context).pop(),
           color: Colors.grey,
           width: buttonWidth,
         ),
         DialogButton(
-          child:
-              Text("Done", style: TextStyle(color: Colors.white, fontSize: 18)),
+          child: const Text("Done",
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () async {
             if (!_formKey.currentState!.validate()) {
               return; // Block submission if validation fails
